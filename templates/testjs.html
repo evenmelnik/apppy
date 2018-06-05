@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		
+	</head>
+	<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	
+	
+	<div onclick="SendPost();">Отправить POST запрос через Ajax</div><br />
+
+<select id="start" class="load">
+    <option>2018-05-01</option>
+    <option>2018-05-02</option>
+    <option>2018-05-03</option>
+</select>
+<select id="end" class="load">
+    <option>2018-05-01</option>
+    <option>2018-05-02</option>
+    <option>2018-05-03</option>
+</select>
+<div id="ord">
+
+</div>
+<script type="text/javascript">
+
+$.getJSON('/what', function(data) {
+	var jsons = data.data;
+	jsons.forEach(function(val, key, jsons) {
+		$('#ord').append('<div><p id="' + val.utm_source + '" class="one" data-source="utm_source" data-children="utm_campaign">' + val.utm_source +'     заказов: ' + val.zak + '   подтвержденно: ' + val.status  + '   цена: ' + val.amount +   '</p></div>');
+		})
+	});
+	
+function rep(str){
+	for(var i = 0; i < str.lenght; i++){
+		
+		}
+	
+	};
+
+
+	
+function func() { 
+  $('p').click(function(event){
+	var id = event.target.id
+	var idres = id.replace(/\-/g , '/').replace(/\iii/g , ':');
+	var tex = $('#' + id).text();
+	alert(tex);
+	//var id = this.id;
+	console.log(id);
+	
+	var start = $('#start').val();
+	var end = $('#end').val();
+	var source = event.target.dataset.source;
+	var children = event.target.dataset.children;
+	
+	
+	
+	$.ajax({
+		type:'post',//тип запроса: get,post либо head
+		url:'/what',//url адрес файла обработчика
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify({'start':start, 'end': end, 'id': idres, 'source': source, 'child': children}),//параметры запроса
+		response:'json',//тип возвращаемого ответа text либо xml
+		success: function save(data) {//возвращаемый результат от сервера
+			var data = JSON.parse(data);
+			data = data.data;
+			//id = id.replace( /\//g , '-');
+			//alert(id);
+			
+			data.forEach(function(val, key, data) {
+		$('#' + event.target.id).append('<p id="' + val[children].replace( /\//g , '-').replace( /\:/g , 'iii') + '" class="two" data-source="utm_campaign" data-children="utm_content">------' + val[children] +'     заказов: ' + val.zak + '   подтвержденно: ' + val.status  + '   цена: ' + val.amount +   '</p>');
+		
+		})
+			
+			
+			
+
+			}
+		});
+	});
+}
+
+setTimeout(func, 500);
+
+
+</script>
+	</body>
+</html>
